@@ -6,6 +6,7 @@ using api.Data;
 using api.Dtos.Stock;
 using api.Interfaces;
 using api.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
@@ -26,9 +27,19 @@ namespace api.Repository
             return stockModel;
         }
 
-        public Task<Stock?> DeleteAsync(int id)
+        public async Task<Stock?> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            if (stockModel == null)
+            {
+                //can't return not found as it is not a stock model type
+                //just return null and let your controller handle the rest
+                return null;
+            }
+            //don't add await here... it doesn't allow us to do that mistake
+            _context.Stocks.Remove(stockModel);
+            await _context.SaveChangesAsync();
+            return stockModel;
         }
 
         public Task<List<Stock>> GetAllAsync()
@@ -36,14 +47,28 @@ namespace api.Repository
             return _context.Stocks.ToListAsync();
         }
 
-        public Task<Stock?> GetByIdAsync(int id)
+        public async Task<Stock?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            return stockModel;
         }
 
-        public Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto)
+        public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto)
         {
-            throw new NotImplementedException();
+            var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            if (stockModel == null)
+            {
+                return null;
+            }
+            //cuz we getting data through stock DTO
+            stockModel.Symbol = stockDto.Symbol;
+            stockModel.Purchase = stockDto.Purchase;
+            stockModel.Industry = stockDto.Industry;
+            stockModel.MarketCap = stockDto.MarketCap;
+            stockModel.LastDiv = stockDto.LastDiv;
+            stockModel.CompanyName = stockDto.CompanyName;
+            await _context.SaveChangesAsync();
+            return stockModel;
         }
     }
 }
