@@ -53,22 +53,22 @@ namespace api.Repository
             return stockModel;
         }
 
-        public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto)
+        public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto updateDto)
         {
-            var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
-            if (stockModel == null)
+            var existingStock = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            if (existingStock == null)
             {
                 return null;
             }
             //cuz we getting data through stock DTO
-            stockModel.Symbol = stockDto.Symbol;
-            stockModel.Purchase = stockDto.Purchase;
-            stockModel.Industry = stockDto.Industry;
-            stockModel.MarketCap = stockDto.MarketCap;
-            stockModel.LastDiv = stockDto.LastDiv;
-            stockModel.CompanyName = stockDto.CompanyName;
+            existingStock.Symbol = updateDto.Symbol;
+            existingStock.Purchase = updateDto.Purchase;
+            existingStock.Industry = updateDto.Industry;
+            existingStock.MarketCap = updateDto.MarketCap;
+            existingStock.LastDiv = updateDto.LastDiv;
+            existingStock.CompanyName = updateDto.CompanyName;
             await _context.SaveChangesAsync();
-            return stockModel;
+            return existingStock;
         }
     }
 }
