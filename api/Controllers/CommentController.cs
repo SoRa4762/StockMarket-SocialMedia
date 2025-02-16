@@ -1,8 +1,6 @@
-using api.Data;
 using api.Dtos.Comment;
 using api.Interfaces;
 using api.Mappers;
-using api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -11,17 +9,16 @@ namespace api.Controllers
     [ApiController]
     public class CommentController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
         private readonly ICommentRepository _commentRepo;
-        public CommentController(ApplicationDBContext context, ICommentRepository commentRepo)
+        public CommentController(ICommentRepository commentRepo)
         {
-            _context = context;
             _commentRepo = commentRepo;
         }
 
-        [HttpGet("{id}")]
-        // [Route("{id}")]
-        // [HttpGet("{id}")] this or that? Only one way to figure out
+        [HttpGet]
+        [Route("{id}")]
+        // [HttpGet("{id}")]
+        // this or that? Only one way to figure out; yeah, i need to 
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
             var commentDto = await _commentRepo.GetCommentByIdAsync(id);
