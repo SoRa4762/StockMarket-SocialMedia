@@ -16,6 +16,14 @@ namespace api.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetAllCommentsAsync()
+        {
+            var comments = await _commentRepo.GetAllCommentsAsync();
+            var commentDto = comments.Select(c => c.FromCommentModelToCommentDto());
+            return Ok(commentDto);
+        }
+
+        [HttpGet]
         [Route("{id}")]
         // [HttpGet("{id}")]
         // this or that? Only one way to figure out; yeah, i need to 
@@ -30,13 +38,15 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateCommentRequestDto createCommentDto)
+        public async Task<IActionResult> PostComment([FromBody] CreateCommentRequestDto createCommentDto)
         {
             //turn it into comment model and then back to commentDTO
             var commentModel = createCommentDto.CreateCommentDtoToCommentModel();
-            await _commentRepo.PostComment(commentModel);
+            var comment = await _commentRepo.PostCommentAsync(commentModel);
             // return Ok(stockDto); I could just do this
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = commentModel.Id }, commentModel.FromCommentModelToCommentDto());
+            //* I did this because this is a test: Test Failed!
+            //! Error: No route matches the supplied values
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = comment.Id }, comment.FromCommentModelToCommentDto());
         }
     }
 }

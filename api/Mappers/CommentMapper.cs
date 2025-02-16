@@ -24,7 +24,8 @@ namespace api.Mappers
             return new Comment
             {
                 Title = commentDto.Title,
-                Content = commentDto.Content
+                Content = commentDto.Content,
+                StockId = commentDto.StockId
             };
         }
     }

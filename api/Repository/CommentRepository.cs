@@ -23,7 +23,7 @@ namespace api.Repository
             // _updateDto = updateDto;
         }
 
-        public async Task<Comment?> DeleteComment(int id)
+        public async Task<Comment?> DeleteCommentAsync(int id)
         {
             var comment = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
             if (comment == null)
@@ -35,7 +35,7 @@ namespace api.Repository
             return comment;
         }
 
-        public async Task<List<Comment>> GetAllComments()
+        public async Task<List<Comment>> GetAllCommentsAsync()
         {
             var comments = await _context.Comments.ToListAsync();
             return comments; // I could've directly: return await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
@@ -51,14 +51,14 @@ namespace api.Repository
             return comment;
         }
 
-        public async Task<Comment> PostComment(Comment comment)
+        public async Task<Comment> PostCommentAsync(Comment comment)
         {
             await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
             return comment;
         }
 
-        public async Task<Comment?> UpdateComment(int id, UpdateCommentRequestDto updateDto)
+        public async Task<Comment?> UpdateCommentAsync(int id, UpdateCommentRequestDto updateDto)
         {
             var existingComment = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
             if (existingComment == null)
