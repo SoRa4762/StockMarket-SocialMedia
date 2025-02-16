@@ -13,12 +13,14 @@ namespace api.Repository
     {
         //will light up only when used by other methods except constructor
         private readonly ApplicationDBContext _context;
-        private readonly UpdateCommentRequestDto _updateDto;
+        //why did I do this? I bet I had to use this somewhere... (probably wrong on that one)
+        //yeah I use this, in controller, and not DTO but Repository... damn
+        // private readonly UpdateCommentRequestDto _updateDto;
 
-        public CommentRepository(ApplicationDBContext context, UpdateCommentRequestDto updateDto)
+        public CommentRepository(ApplicationDBContext context)
         {
             _context = context;
-            _updateDto = updateDto;
+            // _updateDto = updateDto;
         }
 
         public async Task<Comment?> DeleteComment(int id)
@@ -39,7 +41,7 @@ namespace api.Repository
             return comments; // I could've directly: return await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Comment?> GetCommentById(int id)
+        public async Task<Comment?> GetCommentByIdAsync(int id)
         {
             var comment = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
             if (comment == null)

@@ -64,7 +64,6 @@ namespace api.Controllers
             {
                 return NotFound();
             }
-
             await _stockRepo.UpdateAsync(id, updateDto);
             return Ok(stockModel.ToStockDto());
         }
@@ -78,7 +77,6 @@ namespace api.Controllers
             {
                 return NotFound();
             }
-
             return NoContent();
         }
     }

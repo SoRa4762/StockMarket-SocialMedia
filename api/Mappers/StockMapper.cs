@@ -15,7 +15,7 @@ namespace api.Mappers
         //here StockDto is the return type of the ToStockDto method
         //turns Model to DTO
         //works for both update and create so I will use this mapper to turn my update or create model into it's own DTO through this method
-        public static StockDto ToStockDto(this Stock stockModel)
+        public static StockDto ToStockDto(this Stock stockModel) //this keyword - makes THIS method an "extension" method of the Stock class
         {
             return new StockDto
             {
