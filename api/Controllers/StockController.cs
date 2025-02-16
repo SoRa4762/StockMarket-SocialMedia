@@ -18,12 +18,10 @@ namespace api.Controllers
 
     public class StockController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
         private readonly IStockRepository _stockRepo;
-        public StockController(ApplicationDBContext context, IStockRepository stockRepo)
+        public StockController(IStockRepository stockRepo)
         {
             _stockRepo = stockRepo;
-            _context = context;
         }
 
         [HttpGet]
@@ -59,12 +57,16 @@ namespace api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
         {
-            var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            // var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            // if (stockModel == null)
+            // {
+            //     return NotFound();
+            // }
+            var stockModel = await _stockRepo.UpdateAsync(id, updateDto);
             if (stockModel == null)
             {
                 return NotFound();
             }
-            await _stockRepo.UpdateAsync(id, updateDto);
             return Ok(stockModel.ToStockDto());
         }
 

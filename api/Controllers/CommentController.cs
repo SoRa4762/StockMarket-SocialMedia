@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    [Route("api/comment")]
+    [ApiController]
     public class CommentController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
@@ -17,8 +19,8 @@ namespace api.Controllers
             _commentRepo = commentRepo;
         }
 
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
+        // [Route("{id}")]
         // [HttpGet("{id}")] this or that? Only one way to figure out
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
