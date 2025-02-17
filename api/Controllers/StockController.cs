@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using api.Data;
 using api.Dtos.Stock;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 // using api.Repository;
@@ -25,12 +26,12 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() //IActionResult is a wrapper function that saves you from writing whole bunch of code just to return 500 ok message with some data
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query) //IActionResult is a wrapper function that saves you from writing whole bunch of code just to return 500 ok message with some data
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var stocks = await _stockRepo.GetAllAsync();
+            var stocks = await _stockRepo.GetAllAsync(query);
             var stockDto = stocks.Select(s => s.ToStockDto()); //deferred execution
             return Ok(stockDto);
         }
