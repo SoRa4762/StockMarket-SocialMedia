@@ -61,5 +61,29 @@ namespace api.Controllers
             //new is used to create a new instance of the anonymous object to be passed to the GetByIdAsync method
             return CreatedAtAction(nameof(GetCommentByIdAsync), new { id = comment }, comment.FromCommentModelToCommentDto());
         }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateCommentAsync([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateDto)
+        {
+            var commentModel = await _commentRepo.UpdateCommentAsync(id, updateDto);
+            if (commentModel == null)
+            {
+                return NotFound();
+            }
+            return Ok(commentModel.FromCommentModelToCommentDto());
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteCommentAsync([FromRoute] int id)
+        {
+            var commentModel = await _commentRepo.DeleteCommentAsync(id);
+            if (commentModel == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
     }
 }
