@@ -19,12 +19,13 @@ namespace api.Mappers
         }
 
         //takes necessary data for DTO and returns model
-        public static Comment CreateCommentDtoToCommentModel(this CreateCommentRequestDto commentDto)
+        public static Comment CreateCommentDtoToCommentModel(this CreateCommentRequestDto commentDto, int stockId)
         {
             return new Comment
             {
                 Title = commentDto.Title,
                 Content = commentDto.Content,
+                StockId = stockId
             };
         }
     }

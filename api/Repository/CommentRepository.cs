@@ -51,11 +51,11 @@ namespace api.Repository
             return comment;
         }
 
-        public async Task<Comment> PostCommentAsync(Comment comment)
+        public async Task<Comment> PostCommentAsync(Comment commentModel)
         {
-            await _context.Comments.AddAsync(comment);
+            await _context.Comments.AddAsync(commentModel);
             await _context.SaveChangesAsync();
-            return comment;
+            return commentModel;
         }
 
         public async Task<Comment?> UpdateCommentAsync(int id, UpdateCommentRequestDto updateDto)

@@ -10,9 +10,11 @@ namespace api.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ICommentRepository _commentRepo;
-        public CommentController(ICommentRepository commentRepo)
+        private readonly IStockRepository _stockRepo;
+        public CommentController(ICommentRepository commentRepo, IStockRepository stockRepo)
         {
             _commentRepo = commentRepo;
+            _stockRepo = stockRepo;
         }
 
         [HttpGet]
@@ -23,11 +25,11 @@ namespace api.Controllers
             return Ok(commentDto);
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        // [HttpGet("{id}")]
-        // this or that? Only one way to figure out; yeah, i need to 
-        public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
+        // [HttpGet]
+        // [Route("{id}")]
+        [HttpGet("{id}")]
+        // this or that? Only one way to figure out; yeah, works both ways
+        public async Task<IActionResult> GetCommentByIdAsync([FromRoute] int id)
         {
             var commentDto = await _commentRepo.GetCommentByIdAsync(id);
             if (commentDto == null)
@@ -37,16 +39,27 @@ namespace api.Controllers
             return Ok(commentDto.FromCommentModelToCommentDto());
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostComment([FromBody] CreateCommentRequestDto createCommentDto)
+        [HttpPost("{stockId}")]
+        public async Task<IActionResult> PostComment([FromRoute] int stockId, [FromBody] CreateCommentRequestDto createCommentDto)
         {
             //turn it into comment model and then back to commentDTO
-            var commentModel = createCommentDto.CreateCommentDtoToCommentModel();
+            // var commentModel = createCommentDto.CreateCommentDtoToCommentModel();
+            // var comment = await _commentRepo.PostCommentAsync(commentModel);
+            // // return Ok(stockDto); I could just do this
+            // //* I did this because this is a test: Test Failed!
+            // //! Error: No route matches the supplied values
+            // return CreatedAtAction(nameof(GetByIdAsync), new { id = comment.Id }, comment.FromCommentModelToCommentDto());
+
+            if (!await _stockRepo.StockExistsAsync(stockId))
+            {
+                return BadRequest("Stock doesnot exist!");
+            }
+
+            var commentModel = createCommentDto.CreateCommentDtoToCommentModel(stockId);
             var comment = await _commentRepo.PostCommentAsync(commentModel);
-            // return Ok(stockDto); I could just do this
-            //* I did this because this is a test: Test Failed!
-            //! Error: No route matches the supplied values
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = comment.Id }, comment.FromCommentModelToCommentDto());
+            //the id there is the id for the route
+            //new is used to create a new instance of the anonymous object to be passed to the GetByIdAsync method
+            return CreatedAtAction(nameof(GetCommentByIdAsync), new { id = comment }, comment.FromCommentModelToCommentDto());
         }
     }
 }
