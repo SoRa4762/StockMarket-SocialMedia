@@ -38,13 +38,13 @@ namespace api.Repository
 
         public async Task<List<Comment>> GetAllCommentsAsync()
         {
-            var comments = await _context.Comments.ToListAsync();
+            var comments = await _context.Comments.Include(c => c.User).ToListAsync();
             return comments; // I could've directly: return await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Comment?> GetCommentByIdAsync(int id)
         {
-            var comment = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
+            var comment = await _context.Comments.Include(c => c.User).FirstOrDefaultAsync(x => x.Id == id);
             if (comment == null)
             {
                 return null;

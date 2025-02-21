@@ -32,7 +32,7 @@ namespace api.Controllers
                 return BadRequest(ModelState);
 
             var stocks = await _stockRepo.GetAllAsync(query);
-            var stockDto = stocks.Select(s => s.ToStockDto()); //deferred execution
+            var stockDto = stocks.Select(s => s.ToStockDto()).ToList(); //deferred execution
             return Ok(stockDto);
         }
 
