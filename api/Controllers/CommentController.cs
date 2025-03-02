@@ -1,7 +1,10 @@
 using api.Dtos.Comment;
+using api.Extensions;
 using api.Interfaces;
 using api.Mappers;
+using api.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -12,10 +15,12 @@ namespace api.Controllers
     {
         private readonly ICommentRepository _commentRepo;
         private readonly IStockRepository _stockRepo;
-        public CommentController(ICommentRepository commentRepo, IStockRepository stockRepo)
+        private readonly UserManager<User> _userManager;
+        public CommentController(ICommentRepository commentRepo, IStockRepository stockRepo, UserManager<User> userManager)
         {
             _commentRepo = commentRepo;
             _stockRepo = stockRepo;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -67,7 +72,11 @@ namespace api.Controllers
                 return BadRequest("Stock doesnot exist!");
             }
 
+            var username = User.GetUsername();
+            var user = await _userManager.FindByNameAsync(username);
+
             var commentModel = createCommentDto.CreateCommentDtoToCommentModel(stockId);
+            commentModel.UserId = user.Id;
             var comment = await _commentRepo.PostCommentAsync(commentModel);
             //the id there is the id for the route
             //new is used to create a new instance of the anonymous object to be passed to the GetByIdAsync method
